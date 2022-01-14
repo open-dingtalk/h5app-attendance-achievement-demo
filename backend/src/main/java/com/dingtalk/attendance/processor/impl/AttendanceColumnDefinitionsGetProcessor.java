@@ -91,7 +91,7 @@ public class AttendanceColumnDefinitionsGetProcessor extends AbstractProcessor {
 
         // 额外增加几个字段，TODO，这里看开发者自身需要，按特定环境的
 //        PersistDataColumn persistDataColumn1 = new PersistDataColumn("userid", "userid");
-        PersistDataColumn persistDataColumn1 = new PersistDataColumn("用户ID", "用户ID");
+        PersistDataColumn persistDataColumn1 = new PersistDataColumn("用户", "用户");
         persistDataColumn1.setDataType(AttendanceColumnDataType.STRING);
         fields.add(persistDataColumn1);
         context.getFieldIdxMap().put(-90000L, idx++);

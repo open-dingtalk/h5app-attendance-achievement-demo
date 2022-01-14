@@ -12,10 +12,7 @@ import com.dingtalk.attendance.processor.ProcessContext;
 import com.taobao.api.internal.util.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,14 +24,16 @@ public class AttendanceListGetProcessor extends AbstractProcessor {
 
         String accessToken = context.getAccessToken();
         List<AttendanceColumn> attendanceColumns = context.getAttendanceColumns();
-        Set<String> userIds = context.getUserIds();
+        Map<String, String> userIds = context.getUserIds();
         Set<String> columnIds = attendanceColumns.stream().map(col -> col.getId() + "").collect(Collectors.toSet());
         String columnIdList = StrUtil.join(",", columnIds);
 
         AttendanceMatrixData matrixData = null;
         LinkedList<LinkedList<Object>> data = new LinkedList<>();
         // 遍历每个用户，查询其考勤数据
-        for (String userId : userIds) {
+        for (Map.Entry entry : userIds.entrySet()) {
+            String userId = entry.getKey().toString();
+            String username = entry.getValue().toString();
             OapiAttendanceGetcolumnvalResponse.ColumnValListForTopVo columnvalResult = this.dingTalkApi.getAttendanceColumnval(userId, columnIdList, fromDate, toDate, accessToken);
             List<OapiAttendanceGetcolumnvalResponse.ColumnValForTopVo> columnVals = columnvalResult.getColumnVals();
 
@@ -56,7 +55,7 @@ public class AttendanceListGetProcessor extends AbstractProcessor {
 
                 for (int rowIdx = 0; rowIdx < colVals.size(); rowIdx++) {
                     matrixData.set(rowIdx, colIdx, colVals.get(rowIdx).getValue());
-                    matrixData.set(rowIdx, useridIdx, userId);
+                    matrixData.set(rowIdx, useridIdx, username);
                     matrixData.set(rowIdx, recorddateIdx, DateUtil.parseDate(StringUtils.formatDateTime(colVals.get(rowIdx).getDate(), "yyyy-MM-dd")));
                 }
             }
@@ -66,7 +65,7 @@ public class AttendanceListGetProcessor extends AbstractProcessor {
                 for (List<Object> dataRow : matrixData.getValues()) {
                     LinkedList<Object> mergeRow = new LinkedList<>(dataRow);
                     data.add(mergeRow);
-//                    System.out.println(dataRow);
+                    System.out.println(dataRow);
                 }
             }
             matrixData = null;

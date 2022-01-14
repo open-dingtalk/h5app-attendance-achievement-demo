@@ -8,7 +8,7 @@ import java.util.*;
 public class ProcessContext {
 
     private String accessToken;
-    private Set<String> userIds;
+    private Map<String, String> userIds;
     private List<AttendanceColumn> attendanceColumns;
     private List<PersistDataColumn> fields;
     private final Map<Long, Integer> fieldIdxMap = new HashMap<>();
@@ -22,11 +22,11 @@ public class ProcessContext {
         this.accessToken = accessToken;
     }
 
-    public Set<String> getUserIds() {
+    public Map<String, String> getUserIds() {
         return userIds;
     }
 
-    public void setUserIds(Set<String> userIds) {
+    public void setUserIds(Map<String, String> userIds) {
         this.userIds = userIds;
     }
 
